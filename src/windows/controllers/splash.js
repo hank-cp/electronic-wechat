@@ -23,7 +23,7 @@ class SplashWindow {
     this.splashWindow = new BrowserWindow({
       width: Common.WINDOW_SIZE_LOADING.width,
       height: Common.WINDOW_SIZE_LOADING.height,
-      title: Common.ELECTRONIC_WECHAT,
+      title: Common.APP_NAME,
       resizable: false,
       center: true,
       show: true,

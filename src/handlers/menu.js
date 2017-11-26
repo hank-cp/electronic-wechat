@@ -25,7 +25,7 @@ class MenuHandler {
   getTemplate(platform) {
     const darwinTemplate = [
       {
-        label: Common.ELECTRONIC_WECHAT,
+        label: Common.APP_NAME,
         submenu: [
           {
             label: Common.MENU.about,

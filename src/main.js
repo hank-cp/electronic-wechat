@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const {app, ipcMain} = require('electron');
+const { app, ipcMain } = require('electron');
 
 const UpdateHandler = require('./handlers/update');
 const Common = require('./common');
@@ -9,7 +9,7 @@ const AppConfig = require('./configuration');
 
 const SplashWindow = require('./windows/controllers/splash');
 const WeChatWindow = require('./windows/controllers/wechat');
-const SettingsWindow = require('./windows/controllers/settings')
+const SettingsWindow = require('./windows/controllers/settings');
 const AppTray = require('./windows/controllers/app_tray');
 
 class ElectronicWeChat {
@@ -21,7 +21,13 @@ class ElectronicWeChat {
   }
 
   init() {
-    if(this.checkInstance()) {
+    const appArgs = process.argv;
+    if (appArgs.length > 2) {
+      const wxAccount = appArgs[2];
+      console.log(`Setting up userData for ${wxAccount}`);
+      app.setPath('userData', `${app.getPath('userData')}/${wxAccount}`);
+    }
+    if (this.checkInstance()) {
       this.initApp();
       this.initIPC();
     } else {
@@ -31,21 +37,20 @@ class ElectronicWeChat {
   checkInstance() {
     if (AppConfig.readSettings('multi-instance') === 'on') return true;
     return !app.makeSingleInstance((commandLine, workingDirectory) => {
-      if(this.splashWindow && this.splashWindow.isShown){
+      if (this.splashWindow && this.splashWindow.isShown) {
         this.splashWindow.show();
-        return
+        return;
       }
-      if(this.wechatWindow){
+      if (this.wechatWindow) {
         this.wechatWindow.show();
       }
-      if(this.settingsWindow && this.settingsWindow.isShown){
+      if (this.settingsWindow && this.settingsWindow.isShown) {
         this.settingsWindow.show();
       }
     });
-
   }
   initApp() {
-    app.on('ready', ()=> {
+    app.on('ready', () => {
       this.createSplashWindow();
       this.createWeChatWindow();
       this.createTray();
@@ -54,7 +59,7 @@ class ElectronicWeChat {
         AppConfig.saveSettings('language', 'en');
         AppConfig.saveSettings('prevent-recall', 'on');
         AppConfig.saveSettings('icon', 'black');
-        AppConfig.saveSettings('multi-instance','on');
+        AppConfig.saveSettings('multi-instance', 'on');
       }
     });
 
@@ -65,29 +70,29 @@ class ElectronicWeChat {
         this.wechatWindow.show();
       }
     });
-  };
+  }
 
   initIPC() {
     ipcMain.on('badge-changed', (event, num) => {
-      if (process.platform == "darwin") {
+      if (process.platform === 'darwin') {
         app.dock.setBadge(num);
         if (num) {
           this.tray.setTitle(` ${num}`);
         } else {
           this.tray.setTitle('');
         }
-      } else if (process.platform === "linux" || process.platform === "win32") {
-          app.setBadgeCount(num * 1);
-          this.tray.setUnreadStat((num * 1 > 0)? 1 : 0);
+      } else if (process.platform === 'linux' || process.platform === 'win32') {
+        app.setBadgeCount(num * 1);
+        this.tray.setUnreadStat((num * 1 > 0) ? 1 : 0);
       }
     });
 
     ipcMain.on('user-logged', () => {
-      this.wechatWindow.resizeWindow(true, this.splashWindow)
+      this.wechatWindow.resizeWindow(true, this.splashWindow);
     });
 
     ipcMain.on('wx-rendered', (event, isLogged) => {
-      this.wechatWindow.resizeWindow(isLogged, this.splashWindow)
+      this.wechatWindow.resizeWindow(isLogged, this.splashWindow);
     });
 
     ipcMain.on('log', (event, message) => {
@@ -104,7 +109,7 @@ class ElectronicWeChat {
     });
 
     ipcMain.on('update', (event, message) => {
-      let updateHandler = new UpdateHandler();
+      const updateHandler = new UpdateHandler();
       updateHandler.checkForUpdate(`v${app.getVersion()}`, false);
     });
 
@@ -120,8 +125,8 @@ class ElectronicWeChat {
     ipcMain.on('close-settings-window', (event, messgae) => {
       this.settingsWindow.close();
       this.settingsWindow = null;
-    })
-  };
+    });
+  }
 
   createTray() {
     this.tray = new AppTray(this.splashWindow, this.wechatWindow);

@@ -7,8 +7,7 @@
 class Common {
 
 }
-Common.ELECTRON = 'Electron';
-Common.ELECTRONIC_WECHAT = 'Electronic WeChat';
+Common.APP_NAME = 'WeChatBaby';
 Common.DEBUG_MODE = false;
 Common.WINDOW_SIZE = {
   width: 800,

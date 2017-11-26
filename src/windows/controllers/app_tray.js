@@ -47,7 +47,7 @@ class AppTray {
     image.setTemplateImage(true);
 
     this.tray = new Tray(image);
-    this.tray.setToolTip(Common.ELECTRONIC_WECHAT);
+    this.tray.setToolTip(Common.APP_NAME);
 
     ipcMain.on('refreshIcon', () => this.refreshIcon());
 

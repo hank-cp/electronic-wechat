@@ -51,7 +51,7 @@ class WeChatWindow {
 
   createWindow() {
     this.wechatWindow = new BrowserWindow({
-      title: Common.ELECTRONIC_WECHAT,
+      title: Common.APP_NAME,
       resizable: true,
       center: true,
       show: false,
@@ -70,7 +70,7 @@ class WeChatWindow {
 
     /* menu is always visible on xfce session */
     isXfce().then(data => {
-      if(data) {
+      if (data) {
         this.wechatWindow.setMenuBarVisibility(true);
         this.wechatWindow.setAutoHideMenuBar(false);
       }
@@ -115,6 +115,9 @@ class WeChatWindow {
     if (Common.DEBUG_MODE) {
       this.wechatWindow.webContents.openDevTools();
     }
+    // this.wechatWindow.webContents.session.setProxy({
+    //   proxyRules: 'localhost:8001',
+    // }, () => {});
 
     this.connectWeChat();
 
@@ -166,9 +169,11 @@ class WeChatWindow {
   }
 
   registerLocalShortcut() {
-    electronLocalShortcut.register(this.wechatWindow, 'CommandOrControl + H', () => {
-      this.wechatWindow.hide();
-    });
+    if (process.platform !== 'darwin') {
+      electronLocalShortcut.register(this.wechatWindow, 'CommandOrControl + H', () => {
+        this.wechatWindow.hide();
+      });
+    }
   }
 
   unregisterLocalShortCut() {
