@@ -20,14 +20,14 @@ ARCH=$2
 echo "Start packaging for $PLATFORM $ARCH."
 
 if [ $PLATFORM = "linux" ]; then
-    APP_NAME="electronic-wechat"
+    APP_NAME="WetchatPet"
 else
-    APP_NAME="Electronic WeChat"
+    APP_NAME="WeChatPet"
 fi
 
 ignore_list="dist|scripts|\.idea|.*\.md|.*\.yml|node_modules/nodejieba"
 
-electron-packager . "${APP_NAME}" --platform=$PLATFORM --arch=$ARCH --electronVersion=1.4.15 --app-version=1.4.0 --asar --icon=assets/icon.icns --overwrite --out=./dist --ignore=${ignore_list}
+electron-packager . "${APP_NAME}" --platform=$PLATFORM --arch=$ARCH --app-version=0.0.1 --asar --icon=assets/icon.icns --overwrite --out=./dist --ignore=${ignore_list}
 
 if [ $? -eq 0 ]; then
   echo -e "$(tput setaf 2)Packaging for $PLATFORM $ARCH succeeded.$(tput sgr0)\n"
